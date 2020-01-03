@@ -10,7 +10,7 @@ client = MongoClient('localhost', 27017)
 db = client['news']
 
 
-def db_insert_many(data):
+def db_insert(data):
     for news in data:
         db.news.update_one({'_id': news['_id']},
                            {'$set': news},
@@ -30,7 +30,7 @@ def get_root(url):
     return html.fromstring(response.text)
 
 
-def get_mail_data():
+def mail_news() -> list:
     main_link = 'https://mail.ru'
     root = get_root(main_link)
     news_items = root.xpath("//div[contains(@class, 'news')]/div[contains(@class, 'news-item')]//a[last()]")
@@ -60,7 +60,7 @@ def get_mail_data():
     return news_list
 
 
-def get_yandex_data():
+def yandex_news() -> list:
     main_link = 'https://yandex.ru'
     root = get_root(main_link + '/news')
     news_items = root.xpath("//div[@class='stories-set__main-item'] | //td[@class='stories-set__item']")
@@ -97,7 +97,7 @@ def get_yandex_data():
     return news_list
 
 
-def get_lenta_data():  # Беру только новости. Игнорирую топики, ссылки на новости сторонних ресурсов, истории и т.д.
+def lenta_news() -> list:  # Только новости. Игнорирую топики, ссылки на новости ст-нних ресурсов, истории и т.д.
     main_link = 'https://lenta.ru/'
     root = get_root(main_link)
     news_items = root.xpath("//div[contains(@class, 'item') and not(contains(@class, 'news'))]"
@@ -126,11 +126,7 @@ def get_lenta_data():  # Беру только новости. Игнориру�
 
 
 if __name__ == '__main__':
-    funcs = [get_yandex_data,
-             get_mail_data,
-             get_lenta_data]
-
-    for get_data in funcs:
-        db_insert_many(get_data())
-
+    db_insert(yandex_news())
+    db_insert(mail_news())
+    db_insert(lenta_news())
     db_show()
