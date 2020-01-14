@@ -5,19 +5,19 @@ from scrapy.settings import Settings
 from jobparser import settings
 from jobparser.spiders.hh import HhSpider
 from jobparser.spiders.superjob import SuperjobSpider
+import os
+
 
 if __name__ == '__main__':
-    # Чистим логи и базу для удобства дебага
+    # Чистим логи для удобства дебага
+    os.remove('logs.txt')
+
+    spiders = [HhSpider]  #, SuperjobSpider
 
     crawler_settings = Settings()
     crawler_settings.setmodule(settings)
 
-    # hh.ru
-    process = CrawlerProcess(settings=crawler_settings)
-    process.crawl(HhSpider)
-    process.start()
-
-    # superjob.ru
-    # process2 = CrawlerProcess(settings=crawler_settings)
-    # process2.crawl(SuperjobSpider)
-    # process2.start()
+    for spider in spiders:
+        process = CrawlerProcess(settings=crawler_settings)
+        process.crawl(spider)
+        process.start()

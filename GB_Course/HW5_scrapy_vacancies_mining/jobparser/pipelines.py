@@ -14,8 +14,7 @@ class JobparserPipeline(object):
 
     def process_item(self, item, spider):
         collection = self.db[spider.name]
-        collection.insert_one(item)
-        # collection.update_one({'_id': item['_id']},
-        #                       {'$set': item},
-        #                       upsert=True)
+        collection.update_one({'_id': item['_id']},
+                              {'$set': item},
+                              upsert=True)
         return item
