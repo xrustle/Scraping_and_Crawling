@@ -173,3 +173,4 @@ geckodriver.log
 /.ipynb_checkpoints/
 /venv/
 /.idea/
+*.txt
