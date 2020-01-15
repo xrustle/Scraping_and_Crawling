@@ -10,6 +10,7 @@ from pymongo import MongoClient
 class JobparserPipeline(object):
     def __init__(self):
         client = MongoClient('localhost', 27017)
+        client.drop_database('vacancies')
         self.db = client.vacancies
 
     def process_item(self, item, spider):
