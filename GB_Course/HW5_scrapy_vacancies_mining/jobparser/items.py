@@ -18,3 +18,4 @@ class JobparserItem(scrapy.Item):
     unit = scrapy.Field()
     location = scrapy.Field()
     link = scrapy.Field()
+    source = scrapy.Field()

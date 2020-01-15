@@ -32,7 +32,8 @@ class HhSpider(scrapy.Spider):
                 'currency': response.xpath('//meta[@itemprop="currency"]/@content').extract_first(),
                 'unit': response.xpath('//meta[@itemprop="unitText"]/@content').extract_first(),
                 'location': response.xpath('//span[@data-qa="vacancy-view-raw-address"]//text()').extract(),
-                'link': link}
+                'link': link,
+                'source': 'hh.ru'}
 
         item['company'] = re.sub(r'\s+', ' ', ' '.join(item['company']).strip(' '))
 

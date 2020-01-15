@@ -30,14 +30,15 @@ class SuperjobSpider(scrapy.Spider):
         item = {'_id': sha1(data['url'].encode('utf-8')).hexdigest(),
                 'title': data['title'],
                 'company': data['hiringOrganization']['name'],
-                'link': data['url'],
                 'min_salary': None,
                 'max_salary': None,
                 'currency': None,
                 'unit': None,
-                'location': None}
+                'location': None,
+                'link': data['url'],
+                'source': 'superjob.ru'}
 
-        salary = data.get(['baseSalary'])
+        salary = data.get('baseSalary')
         if salary:
             item['currency'] = salary.get('currency')
             if 'value' in salary:
