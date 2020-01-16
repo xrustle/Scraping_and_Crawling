@@ -98,4 +98,5 @@ class JobparserPipeline(object):
         self.db[spider.name].update_one({'_id': item['_id']},
                                         {'$set': item},
                                         upsert=True)
+        logger.debug('Vacancy added to MongoDB')
         return item
