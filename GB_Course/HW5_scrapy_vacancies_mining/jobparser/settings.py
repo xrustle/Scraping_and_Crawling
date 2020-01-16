@@ -73,6 +73,8 @@ ROBOTSTXT_OBEY = False
 ITEM_PIPELINES = {
    'jobparser.pipelines.JobparserPipeline': 300,
 }
+MONGO_URI = 'mongodb://localhost:27017'
+MONGO_DATABASE = 'vacancies'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

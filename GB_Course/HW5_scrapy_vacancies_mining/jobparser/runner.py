@@ -7,16 +7,15 @@ from jobparser.spiders.hh import HhSpider
 from jobparser.spiders.superjob import SuperjobSpider
 import os
 
-logfile = 'logs.txt'
 spiders = HhSpider, SuperjobSpider
 
 if __name__ == '__main__':
     # Чистим логи для удобства дебага
-    if os.path.exists(logfile):
-        os.remove(logfile)
-
     crawler_settings = Settings()
     crawler_settings.setmodule(settings)
+
+    if os.path.exists(crawler_settings.get('LOG_FILE')):
+        os.remove(crawler_settings.get('LOG_FILE'))
 
     process = CrawlerProcess(settings=crawler_settings)
     for spider in spiders:
