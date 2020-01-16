@@ -93,9 +93,9 @@ class JobparserPipeline(object):
             return self.superjob_record(item)
 
     def process_item(self, item, spider):
-        db_record = self.get_db_record(item, spider.name)
-        logger.debug(db_record)
-        self.db[spider.name].update_one({'_id': db_record['_id']},
-                                        {'$set': db_record},
+        item = self.get_db_record(item, spider.name)
+        logger.debug(item)
+        self.db[spider.name].update_one({'_id': item['_id']},
+                                        {'$set': item},
                                         upsert=True)
         return item
