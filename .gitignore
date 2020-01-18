@@ -174,3 +174,4 @@ geckodriver.log
 /venv/
 /.idea/
 *.txt
+*.jpg
