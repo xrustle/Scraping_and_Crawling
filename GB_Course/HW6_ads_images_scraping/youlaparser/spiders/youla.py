@@ -12,6 +12,7 @@ class YoulaSpider(scrapy.Spider):
     def __init__(self, city, section):
         super(YoulaSpider, self).__init__()
         self.main_url = f'https://youla.ru/{city}/{section}?page=%d'
+        self.collection = f'{city}_{section}'.replace('/', '_')
         self.page = 1
         self.start_urls = [self.main_url % self.page]
 

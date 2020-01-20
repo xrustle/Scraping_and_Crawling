@@ -9,20 +9,25 @@ from scrapy.pipelines.images import ImagesPipeline
 import scrapy
 import json
 import re
+from hashlib import sha1
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ScriptParsingPipeline(object):
     def process_item(self, item, spider):
-        rec = {'url': item['url']}
+        rec = {
+            'url': item['url'],
+            '_id': sha1(item['url'].encode('utf-8')).hexdigest()
+        }
         re_search = re.search(r'{.*}', item['data'])
         if re_search:
             item['data'] = json.loads(re_search.group(0))
             entities = item['data'].get('entities')
             if entities:
-                cities = entities.get('cities')
                 products = entities.get('products')
                 if products:
-                    # pprint(products[0])
                     rec['title'] = products[0].get('name')
                     rec['description'] = products[0].get('description')
                     images = products[0].get('images')
@@ -66,10 +71,12 @@ class YoulaImagesPipeline(ImagesPipeline):
 class DBPipeline(object):
     def __init__(self):
         client = MongoClient('localhost', 27017)
-        client.drop_database('youla_images')
-        self.mongo_base = client.youla_images
+        # client.drop_database('youla_images')
+        self.db = client.youla_images
 
     def process_item(self, item, spider):
-        collection = self.mongo_base[spider.name]
-        collection.insert_one(item)
+        self.db[spider.collection].update_one({'_id': item['_id']},
+                                              {'$set': item},
+                                              upsert=True)
+        logger.debug('Vacancy added to MongoDB')
         return item
