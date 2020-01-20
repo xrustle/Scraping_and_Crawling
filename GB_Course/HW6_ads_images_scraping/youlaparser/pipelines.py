@@ -52,14 +52,19 @@ class ScriptParsingPipeline(object):
                     rec['price'] = products[0].get('price')
                     if rec['price']:
                         rec['price'] = rec['price'] / 100
+
+                    # Доп. атрибуты
                     attributes = products[0].get('attributes')
                     if attributes:
                         rec['attributes'] = {}
                         for attr in attributes:
                             key = attr['slug']
                             value = attr['values'][0]['value']
-                            if key == 'price' and int(value):
-                                value = int(value) / 100
+                            if value.isdigit():
+                                if 'price' in key or 'ploshad' in key:
+                                    value = int(value) / 100
+                                else:
+                                    value = int(value)
                             rec['attributes'][key] = value
         item = rec
         return item
