@@ -15,6 +15,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def item_path(url):
+    re_search = re.search(r'^(?:[^\/]*\/){3}(.+)$', url)
+    return re_search.group(1)
+
+
 class ScriptParsingPipeline(object):
     def process_item(self, item, spider):
         rec = {
@@ -32,7 +37,11 @@ class ScriptParsingPipeline(object):
                     rec['description'] = products[0].get('description')
                     images = products[0].get('images')
                     if images:
-                        rec['images'] = [image['url'] for image in images]
+                        path = item_path(item['url'])
+                        rec['images'] = []
+                        for i, image in enumerate(images):
+                            rec['images'].append({
+                                image['url']: path + '/' + str(i + 1) + '.' + image['url'].split('.')[-1]})
                     location = products[0].get('location')
                     if location:
                         rec['location'] = location['description']
@@ -57,10 +66,13 @@ class YoulaImagesPipeline(ImagesPipeline):
         images = item.get('images')
         if images:
             for image in images:
-                try:
-                    yield scrapy.Request(image)
-                except Exception as e:
-                    print(e)
+                for image_url, image_dir in image.items():
+                    request = scrapy.Request(url=image_url)
+                    request.meta['img_dir'] = image_dir
+                    yield request
+
+    def file_path(self, request, response=None, info=None):
+        return request.meta['img_dir']
 
     def item_completed(self, results, item, info):
         if results:
