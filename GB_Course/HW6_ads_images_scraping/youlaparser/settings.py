@@ -16,10 +16,8 @@ NEWSPIDER_MODULE = 'youlaparser.spiders'
 
 LOG_ENABLED = True
 LOG_LEVEL = 'DEBUG'
-# LOG_FILE = 'log.txt'
 
 IMAGES_STORE = 'images'
-# IMAGES_EXPIRES = 30
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) ' \

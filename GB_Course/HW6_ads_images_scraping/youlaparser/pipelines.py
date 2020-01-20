@@ -35,6 +35,9 @@ class ScriptParsingPipeline(object):
                 if products:
                     rec['title'] = products[0].get('name')
                     rec['description'] = products[0].get('description')
+
+                    # Помимо записи URL изображений, также записываю путь и имя для фотографий
+                    # Путь строится из URL объявления. Имя фотографии = порядковый номер + расширение из URL фотографии
                     images = products[0].get('images')
                     if images:
                         path = item_path(item['url'])
@@ -42,6 +45,7 @@ class ScriptParsingPipeline(object):
                         for i, image in enumerate(images):
                             rec['images'].append({
                                 image['url']: path + '/' + str(i + 1) + '.' + image['url'].split('.')[-1]})
+
                     location = products[0].get('location')
                     if location:
                         rec['location'] = location['description']
@@ -66,9 +70,9 @@ class YoulaImagesPipeline(ImagesPipeline):
         images = item.get('images')
         if images:
             for image in images:
-                for image_url, image_dir in image.items():
+                for image_url, img_dir in image.items():
                     request = scrapy.Request(url=image_url)
-                    request.meta['img_dir'] = image_dir
+                    request.meta['img_dir'] = img_dir
                     yield request
 
     def file_path(self, request, response=None, info=None):
@@ -83,7 +87,6 @@ class YoulaImagesPipeline(ImagesPipeline):
 class DBPipeline(object):
     def __init__(self):
         client = MongoClient('localhost', 27017)
-        # client.drop_database('youla_images')
         self.db = client.youla_images
 
     def process_item(self, item, spider):
